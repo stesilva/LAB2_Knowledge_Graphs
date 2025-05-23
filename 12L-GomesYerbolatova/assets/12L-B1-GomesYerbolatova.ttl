@@ -1,0 +1,158 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rp: <http://www.rpample.edu/research-publication/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+rp:author a rdfs:Class ;
+    rdfs:subClassOf rp:person .
+
+rp:conference a rdfs:Class ;
+    rdfs:subClassOf rp:event .
+
+rp:edition a rdfs:Class .
+
+rp:editionCity a rdfs:Class .
+
+rp:editionYear a rdfs:Class .
+
+rp:event a rdfs:Class .
+
+rp:eventChair a rdfs:Class ;
+    rdfs:subClassOf rp:person .
+
+rp:journal a rdfs:Class .
+
+rp:journalEditor a rdfs:Class ;
+    rdfs:subClassOf rp:person .
+
+rp:keyword a rdfs:Class .
+
+rp:paper a rdfs:Class .
+
+rp:person a rdfs:Class .
+
+rp:publication a rdfs:Class .
+
+rp:reviewer a rdfs:Class ;
+    rdfs:subClassOf rp:person .
+
+rp:volume a rdfs:Class .
+
+rp:volumeYear a rdfs:Class .
+
+rp:workshop a rdfs:Class ;
+    rdfs:subClassOf rp:event .
+
+rp:abstract a rdf:Property ;
+    rdfs:domain rp:paper ;
+    rdfs:range xsd:string .
+
+rp:assignsForEvent a rdf:Property ;
+    rdfs:domain rp:eventChair ;
+    rdfs:range rp:reviewer .
+
+rp:assignsForJournal a rdf:Property ;
+    rdfs:domain rp:journalEditor ;
+    rdfs:range rp:reviewer .
+
+rp:cites a rdf:Property ;
+    rdfs:domain rp:paper ;
+    rdfs:range rp:paper .
+
+rp:corresponded a rdf:Property ;
+    rdfs:domain rp:author ;
+    rdfs:range rp:paper ;
+    rdfs:subPropertyOf rp:wrote .
+
+rp:editionNumber a rdf:Property ;
+    rdfs:domain rp:edition ;
+    rdfs:range xsd:integer .
+
+rp:eventName a rdf:Property ;
+    rdfs:domain rp:event ;
+    rdfs:range xsd:string .
+
+rp:eventURL a rdf:Property ;
+    rdfs:domain rp:event ;
+    rdfs:range xsd:string .
+
+rp:hasChair a rdf:Property ;
+    rdfs:domain rp:event ;
+    rdfs:range rp:eventChair .
+
+rp:hasEdition a rdf:Property ;
+    rdfs:domain rp:event ;
+    rdfs:range rp:edition .
+
+rp:hasEditionCity a rdf:Property ;
+    rdfs:domain rp:edition ;
+    rdfs:range rp:editionCity .
+
+rp:hasEditionYear a rdf:Property ;
+    rdfs:domain rp:edition ;
+    rdfs:range rp:editionYear .
+
+rp:hasJournalEditor a rdf:Property ;
+    rdfs:domain rp:journal ;
+    rdfs:range rp:journalEditor .
+
+rp:hasKeyword a rdf:Property ;
+    rdfs:domain rp:paper ;
+    rdfs:range rp:keyword .
+
+rp:hasVolume a rdf:Property ;
+    rdfs:domain rp:journal ;
+    rdfs:range rp:volume .
+
+rp:hasVolumeYear a rdf:Property ;
+    rdfs:domain rp:volume ;
+    rdfs:range rp:volumeYear .
+
+rp:issn a rdf:Property ;
+    rdfs:domain rp:journal ;
+    rdfs:range xsd:string .
+
+rp:journalName a rdf:Property ;
+    rdfs:domain rp:journal ;
+    rdfs:range xsd:string .
+
+rp:journalURL a rdf:Property ;
+    rdfs:domain rp:journal ;
+    rdfs:range xsd:string .
+
+rp:pages a rdf:Property ;
+    rdfs:domain rp:publication ;
+    rdfs:range xsd:string .
+
+rp:personName a rdf:Property ;
+    rdfs:domain rp:person ;
+    rdfs:range xsd:string .
+
+rp:published a rdf:Property ;
+    rdfs:domain rp:publication ;
+    rdfs:range rp:paper .
+
+rp:publishedInEdition a rdf:Property ;
+    rdfs:domain rp:publication ;
+    rdfs:range rp:edition .
+
+rp:publishedInVolume a rdf:Property ;
+    rdfs:domain rp:publication ;
+    rdfs:range rp:volume .
+
+rp:reviewed a rdf:Property ;
+    rdfs:domain rp:reviewer ;
+    rdfs:range rp:paper .
+
+rp:title a rdf:Property ;
+    rdfs:domain rp:paper ;
+    rdfs:range xsd:string .
+
+rp:volumeNumber a rdf:Property ;
+    rdfs:domain rp:volume ;
+    rdfs:range xsd:integer .
+
+rp:wrote a rdf:Property ;
+    rdfs:domain rp:author ;
+    rdfs:range rp:paper .
+

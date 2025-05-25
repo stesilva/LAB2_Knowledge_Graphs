@@ -1,13 +1,13 @@
 from rdflib import Graph, Namespace
 from rdflib.namespace import RDF, RDFS, XSD
 
-#define a custom namespace
-rp = Namespace("http://www.rpample.edu/research-publication/")
+#define a custom _namespace
+rp = Namespace("http://www.example.edu/research-publication/")
 
 #create a new graph
 g = Graph()
 
-#binding prefixes to namespaces
+#binding prefixes to _namespaces
 g.bind("rp", rp)
 g.bind("rdf", RDF)
 g.bind("rdfs", RDFS)
@@ -17,8 +17,8 @@ g.bind("xsd", XSD)
 g.add((rp.person, RDF.type, RDFS.Class))
 g.add((rp.author, RDF.type, RDFS.Class))
 g.add((rp.reviewer, RDF.type, RDFS.Class))
-g.add((rp.journalEditor, RDF.type, RDFS.Class))
-g.add((rp.eventChair, RDF.type, RDFS.Class))
+g.add((rp.journal_editor, RDF.type, RDFS.Class))
+g.add((rp.event_chair, RDF.type, RDFS.Class))
 g.add((rp.paper, RDF.type, RDFS.Class))
 g.add((rp.keyword, RDF.type, RDFS.Class))
 g.add((rp.publication, RDF.type, RDFS.Class))
@@ -28,23 +28,23 @@ g.add((rp.edition, RDF.type, RDFS.Class))
 g.add((rp.volume, RDF.type, RDFS.Class))
 g.add((rp.conference, RDF.type, RDFS.Class))
 g.add((rp.workshop, RDF.type, RDFS.Class))
-g.add((rp.editionYear, RDF.type, RDFS.Class))
-g.add((rp.editionCity, RDF.type, RDFS.Class))
-g.add((rp.volumeYear, RDF.type, RDFS.Class))
+g.add((rp.edition_year, RDF.type, RDFS.Class))
+g.add((rp.edition_city, RDF.type, RDFS.Class))
+g.add((rp.volume_year, RDF.type, RDFS.Class))
 
 #subclass
 g.add((rp.author, RDFS.subClassOf, rp.person))
 g.add((rp.reviewer, RDFS.subClassOf, rp.person))
-g.add((rp.journalEditor, RDFS.subClassOf, rp.person))
-g.add((rp.eventChair, RDFS.subClassOf, rp.person))
+g.add((rp.journal_editor, RDFS.subClassOf, rp.person))
+g.add((rp.event_chair, RDFS.subClassOf, rp.person))
 g.add((rp.conference, RDFS.subClassOf, rp.event))
 g.add((rp.workshop, RDFS.subClassOf, rp.event))
 
 #Properties (literal, class)
 #Person properties
-g.add((rp.personName, RDF.type, RDF.Property))
-g.add((rp.personName, RDFS.domain, rp.person))
-g.add((rp.personName, RDFS.range, XSD.string))
+g.add((rp.person_name, RDF.type, RDF.Property))
+g.add((rp.person_name, RDFS.domain, rp.person))
+g.add((rp.person_name, RDFS.range, XSD.string))
 
 #Paper properties
 g.add((rp.title, RDF.type, RDF.Property))
@@ -60,70 +60,70 @@ g.add((rp.pages, RDF.type, RDF.Property))
 g.add((rp.pages, RDFS.domain, rp.publication))
 g.add((rp.pages, RDFS.range, XSD.string))
 
-#Edition properties
-g.add((rp.editionNumber, RDF.type, RDF.Property))
-g.add((rp.editionNumber, RDFS.domain, rp.edition))
-g.add((rp.editionNumber, RDFS.range, XSD.integer))
+#_edition properties
+g.add((rp.edition_number, RDF.type, RDF.Property))
+g.add((rp.edition_number, RDFS.domain, rp.edition))
+g.add((rp.edition_number, RDFS.range, XSD.integer))
 
-g.add((rp.hasEditionYear, RDF.type, RDF.Property))
-g.add((rp.hasEditionYear, RDFS.domain, rp.edition))
-g.add((rp.hasEditionYear, RDFS.range, rp.editionYear))
+g.add((rp.has_edition_year, RDF.type, RDF.Property))
+g.add((rp.has_edition_year, RDFS.domain, rp.edition))
+g.add((rp.has_edition_year, RDFS.range, rp.edition_year))
 
-g.add((rp.hasEditionCity, RDF.type, RDF.Property))
-g.add((rp.hasEditionCity, RDFS.domain, rp.edition))
-g.add((rp.hasEditionCity, RDFS.range, rp.editionCity))
+g.add((rp.has_edition_city, RDF.type, RDF.Property))
+g.add((rp.has_edition_city, RDFS.domain, rp.edition))
+g.add((rp.has_edition_city, RDFS.range, rp.edition_city))
 
 #Volume properties
-g.add((rp.volumeNumber, RDF.type, RDF.Property))
-g.add((rp.volumeNumber, RDFS.domain, rp.volume))
-g.add((rp.volumeNumber, RDFS.range, XSD.integer))
+g.add((rp.volume_number, RDF.type, RDF.Property))
+g.add((rp.volume_number, RDFS.domain, rp.volume))
+g.add((rp.volume_number, RDFS.range, XSD.integer))
 
-g.add((rp.hasVolumeYear, RDF.type, RDF.Property))
-g.add((rp.hasVolumeYear, RDFS.domain, rp.volume))
-g.add((rp.hasVolumeYear, RDFS.range, rp.volumeYear))
+g.add((rp.has_volume_year, RDF.type, RDF.Property))
+g.add((rp.has_volume_year, RDFS.domain, rp.volume))
+g.add((rp.has_volume_year, RDFS.range, rp.volume_year))
 
 #Event properties
-g.add((rp.eventURL, RDF.type, RDF.Property))
-g.add((rp.eventURL, RDFS.domain, rp.event))
-g.add((rp.eventURL, RDFS.range, XSD.string))
+g.add((rp.event_url, RDF.type, RDF.Property))
+g.add((rp.event_url, RDFS.domain, rp.event))
+g.add((rp.event_url, RDFS.range, XSD.string))
 
-g.add((rp.eventName, RDF.type, RDF.Property))
-g.add((rp.eventName, RDFS.domain, rp.event))
-g.add((rp.eventName, RDFS.range, XSD.string))
+g.add((rp.event_name, RDF.type, RDF.Property))
+g.add((rp.event_name, RDFS.domain, rp.event))
+g.add((rp.event_name, RDFS.range, XSD.string))
 
-g.add((rp.hasChair, RDF.type, RDF.Property))
-g.add((rp.hasChair, RDFS.domain, rp.event))
-g.add((rp.hasChair, RDFS.range, rp.eventChair))
+g.add((rp.has_chair, RDF.type, RDF.Property))
+g.add((rp.has_chair, RDFS.domain, rp.event))
+g.add((rp.has_chair, RDFS.range, rp.event_chair))
 
-g.add((rp.hasEdition, RDF.type, RDF.Property))
-g.add((rp.hasEdition, RDFS.domain, rp.event))
-g.add((rp.hasEdition, RDFS.range, rp.edition))
+g.add((rp.has_edition, RDF.type, RDF.Property))
+g.add((rp.has_edition, RDFS.domain, rp.event))
+g.add((rp.has_edition, RDFS.range, rp.edition))
 
 #Journal properties
-g.add((rp.journalURL, RDF.type, RDF.Property))
-g.add((rp.journalURL, RDFS.domain, rp.journal))
-g.add((rp.journalURL, RDFS.range, XSD.string))
+g.add((rp.journal_url, RDF.type, RDF.Property))
+g.add((rp.journal_url, RDFS.domain, rp.journal))
+g.add((rp.journal_url, RDFS.range, XSD.string))
 
-g.add((rp.journalName, RDF.type, RDF.Property))
-g.add((rp.journalName, RDFS.domain, rp.journal))
-g.add((rp.journalName, RDFS.range, XSD.string))
+g.add((rp.journal_name, RDF.type, RDF.Property))
+g.add((rp.journal_name, RDFS.domain, rp.journal))
+g.add((rp.journal_name, RDFS.range, XSD.string))
 
-g.add((rp.issn, RDF.type, RDF.Property))
-g.add((rp.issn, RDFS.domain, rp.journal))
-g.add((rp.issn, RDFS.range, XSD.string))
+g.add((rp.ISSN, RDF.type, RDF.Property))
+g.add((rp.ISSN, RDFS.domain, rp.journal))
+g.add((rp.ISSN, RDFS.range, XSD.string))
 
-g.add((rp.hasJournalEditor, RDF.type, RDF.Property))
-g.add((rp.hasJournalEditor, RDFS.domain, rp.journal))
-g.add((rp.hasJournalEditor, RDFS.range, rp.journalEditor))
+g.add((rp.has_journal_editor, RDF.type, RDF.Property))
+g.add((rp.has_journal_editor, RDFS.domain, rp.journal))
+g.add((rp.has_journal_editor, RDFS.range, rp.journal_editor))
 
-g.add((rp.hasVolume, RDF.type, RDF.Property))
-g.add((rp.hasVolume, RDFS.domain, rp.journal))
-g.add((rp.hasVolume, RDFS.range, rp.volume))
+g.add((rp.has_volume, RDF.type, RDF.Property))
+g.add((rp.has_volume, RDFS.domain, rp.journal))
+g.add((rp.has_volume, RDFS.range, rp.volume))
 
 #Relationships
-g.add((rp.hasKeyword, RDF.type, RDF.Property))
-g.add((rp.hasKeyword, RDFS.domain, rp.paper))
-g.add((rp.hasKeyword, RDFS.range, rp.keyword))
+g.add((rp.has_keyword, RDF.type, RDF.Property))
+g.add((rp.has_keyword, RDFS.domain, rp.paper))
+g.add((rp.has_keyword, RDFS.range, rp.keyword))
 
 g.add((rp.cites, RDF.type, RDF.Property))
 g.add((rp.cites, RDFS.domain, rp.paper))
@@ -133,13 +133,13 @@ g.add((rp.published, RDF.type, RDF.Property))
 g.add((rp.published, RDFS.domain, rp.publication))
 g.add((rp.published, RDFS.range, rp.paper))
 
-g.add((rp.publishedInEdition, RDF.type, RDF.Property))
-g.add((rp.publishedInEdition, RDFS.domain, rp.publication))
-g.add((rp.publishedInEdition, RDFS.range, rp.edition))
+g.add((rp.published_in_edition, RDF.type, RDF.Property))
+g.add((rp.published_in_edition, RDFS.domain, rp.publication))
+g.add((rp.published_in_edition, RDFS.range, rp.edition))
 
-g.add((rp.publishedInVolume, RDF.type, RDF.Property))
-g.add((rp.publishedInVolume, RDFS.domain, rp.publication))
-g.add((rp.publishedInVolume, RDFS.range, rp.volume))
+g.add((rp.published_in_volume, RDF.type, RDF.Property))
+g.add((rp.published_in_volume, RDFS.domain, rp.publication))
+g.add((rp.published_in_volume, RDFS.range, rp.volume))
 
 g.add((rp.wrote, RDF.type, RDF.Property))
 g.add((rp.wrote, RDFS.domain, rp.author))
@@ -153,13 +153,13 @@ g.add((rp.reviewed, RDF.type, RDF.Property))
 g.add((rp.reviewed, RDFS.domain, rp.reviewer))
 g.add((rp.reviewed, RDFS.range, rp.paper))
 
-g.add((rp.assignsForEvent, RDF.type, RDF.Property))
-g.add((rp.assignsForEvent, RDFS.domain, rp.eventChair))
-g.add((rp.assignsForEvent, RDFS.range, rp.reviewer))
+g.add((rp.assigns_for_event, RDF.type, RDF.Property))
+g.add((rp.assigns_for_event, RDFS.domain, rp.event_chair))
+g.add((rp.assigns_for_event, RDFS.range, rp.reviewer))
 
-g.add((rp.assignsForJournal, RDF.type, RDF.Property))
-g.add((rp.assignsForJournal, RDFS.domain, rp.journalEditor))
-g.add((rp.assignsForJournal, RDFS.range, rp.reviewer))
+g.add((rp.assigns_for_journal, RDF.type, RDF.Property))
+g.add((rp.assigns_for_journal, RDFS.domain, rp.journal_editor))
+g.add((rp.assigns_for_journal, RDFS.range, rp.reviewer))
 
 #subProperty
 g.add((rp.corresponded, RDFS.subPropertyOf, rp.wrote))

@@ -203,7 +203,7 @@ def edition():
     # Read CSV files
     edition_df = pd.read_csv('./nodes_edges/edition.csv')
     event_edition_df = pd.read_csv('./nodes_edges/event_hasEdition_edition.csv')
-
+    event_df = pd.read_csv('./nodes_edges/event.csv')
     for index, row in edition_df.iterrows():
         edition_uri = URIRef(rp + 'edition/'+str(row['editionId']))
         
@@ -225,8 +225,16 @@ def edition():
     # Connect editions to events
     for index, row in event_edition_df.iterrows():
         edition_uri = URIRef(rp + 'edition/'+str(row['editionId']))
-        event_uri = URIRef(rp + 'event/'+str(row['eventId']))
+        event_id = row['eventId']
         
+        # Get event type from event_df
+        event_type = event_df[event_df['eventId'] == event_id]['type'].iloc[0]
+        
+        if event_type == 'Conference':
+            event_uri = URIRef(rp + 'conference/'+str(event_id))
+        elif event_type == 'Workshop':
+            event_uri = URIRef(rp + 'workshop/'+str(event_id))
+            
         g.add((event_uri, rp.has_edition, edition_uri))
 
     return g

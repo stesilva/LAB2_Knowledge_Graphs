@@ -441,17 +441,17 @@ def main():
     
     # Save property statistics
     property_df = pd.DataFrame(list(property_stats.items()), columns=['Property', 'Count'])
-    property_df.to_csv(f'property_stats.csv', index=False)
+    property_df.to_csv(f'12L-GomesYerbolatova/assets/property_stats.csv', index=False)
     print(f"\nProperty statistics saved to property_stats.csv")
     
     # Save class statistics
     class_df = pd.DataFrame(list(class_stats.items()), columns=['Class', 'Count'])
-    class_df.to_csv(f'class_stats.csv', index=False)
+    class_df.to_csv(f'12L-GomesYerbolatova/assets/class_stats.csv', index=False)
     print(f"Class statistics saved to class_stats.csv")
     
     # Serialize the final complete graph
     print("\nSerializing final complete graph...")
-    g.serialize(destination="12L-B2-GomesYerbolatova.ttl", format="turtle")
+    g.serialize(destination="12L-GomesYerbolatova/assets/12L-B2-GomesYerbolatova.ttl", format="turtle")
     print(f"\nKnowledge graph creation complete!")
     print(f"Total number of triples: {len(g)}")
 

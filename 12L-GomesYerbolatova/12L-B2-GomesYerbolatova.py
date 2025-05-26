@@ -203,7 +203,8 @@ def edition():
     # Read CSV files
     edition_df = pd.read_csv('./nodes_edges/edition.csv')
     event_edition_df = pd.read_csv('./nodes_edges/event_hasEdition_edition.csv')
-    event_df = pd.read_csv('./nodes_edges/event.csv')
+    event_df = pd.read_csv('./nodes_edges/event.csv')  # Added event.csv to get event types
+
     for index, row in edition_df.iterrows():
         edition_uri = URIRef(rp + 'edition/'+str(row['editionId']))
         
@@ -222,7 +223,7 @@ def edition():
             city_uri = URIRef(rp + 'edition_city/'+sanitize_uri_string(row['location']))
             g.add((edition_uri, rp.has_edition_city, city_uri))
     
-    # Connect editions to events
+    # Connect editions to events based on event type
     for index, row in event_edition_df.iterrows():
         edition_uri = URIRef(rp + 'edition/'+str(row['editionId']))
         event_id = row['eventId']
@@ -278,10 +279,12 @@ def event():
         if pd.notna(row['type']):
             if row['type'] == 'Conference':
                 event_uri = URIRef(rp + 'conference/'+str(row['eventId']))
+                g.add((event_uri, RDF.type, rp.conference))
             elif row['type'] == 'Workshop':
                 event_uri = URIRef(rp + 'workshop/'+str(row['eventId']))
+                g.add((event_uri, RDF.type, rp.workshop))
             else:
-                continue  # Skip if type is not Conference or Workshop
+                continue
             
             # Add event name if available
             if pd.notna(row['name']):
@@ -367,24 +370,25 @@ def main():
     print(f"   Added {len(g) - initial_triples} triples")
     initial_triples = len(g)
     
-    print("\n5. Processing volumes...")
-    volume()
-    print(f"   Added {len(g) - initial_triples} triples")
-    initial_triples = len(g)
-    
-    print("\n6. Processing editions...")
-    edition()
-    print(f"   Added {len(g) - initial_triples} triples")
-    initial_triples = len(g)
-    
-    print("\n7. Processing journals...")
+    print("\n5. Processing journals...")
     journal()
     print(f"   Added {len(g) - initial_triples} triples")
     initial_triples = len(g)
     
-    print("\n8. Processing events...")
+    print("\n6. Processing events...")
     event()
     print(f"   Added {len(g) - initial_triples} triples")
+
+    print("\n7. Processing volumes...")
+    volume()
+    print(f"   Added {len(g) - initial_triples} triples")
+    initial_triples = len(g)
+    
+    print("\n8. Processing editions...")
+    edition()
+    print(f"   Added {len(g) - initial_triples} triples")
+    initial_triples = len(g)
+    
     
     # Collect property statistics
     property_stats = {
@@ -437,17 +441,17 @@ def main():
     
     # Save property statistics
     property_df = pd.DataFrame(list(property_stats.items()), columns=['Property', 'Count'])
-    property_df.to_csv(f'12L-GomesYerbolatova/assets/property_stats.csv', index=False)
+    property_df.to_csv(f'property_stats.csv', index=False)
     print(f"\nProperty statistics saved to property_stats.csv")
     
     # Save class statistics
     class_df = pd.DataFrame(list(class_stats.items()), columns=['Class', 'Count'])
-    class_df.to_csv(f'12L-GomesYerbolatova/assets/class_stats.csv', index=False)
+    class_df.to_csv(f'class_stats.csv', index=False)
     print(f"Class statistics saved to class_stats.csv")
     
     # Serialize the final complete graph
     print("\nSerializing final complete graph...")
-    g.serialize(destination="12L-GomesYerbolatova/assets/12L-B2-GomesYerbolatova.ttl", format="turtle")
+    g.serialize(destination="12L-B2-GomesYerbolatova.ttl", format="turtle")
     print(f"\nKnowledge graph creation complete!")
     print(f"Total number of triples: {len(g)}")
 

@@ -1,0 +1,9 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rp: <http://www.example.edu/research-publication/>
+
+SELECT DISTINCT ?paper
+WHERE {
+  ?paper rdf:type rp:paper .
+  ?paper rp:cites ?otherPaper . #paper as domain
+  ?citingPaper rp:cites ?paper . #paper as range
+}

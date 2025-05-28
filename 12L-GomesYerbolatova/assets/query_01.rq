@@ -1,0 +1,31 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rp: <http://www.example.edu/research-publication/>
+
+SELECT DISTINCT ?person ?person_name ?role ?paper
+WHERE {
+  #Find all subclasses of rp:person except event_chair and journal_editor
+  ?role rdfs:subClassOf rp:person .
+  FILTER (?role != rp:event_chair && ?role != rp:journal_editor)
+  
+  #Find persons of those roles
+  ?person a ?role .
+  OPTIONAL { ?person rp:person_name ?person_name }
+  
+  #Find persons linked to the determined paper by authoring, corresponding, or reviewing
+  ?paper a rp:paper .
+  {
+    ?person rp:wrote ?paper .
+  }
+  UNION
+  {
+    ?person rp:corresponded ?paper .
+  }
+  UNION
+  {
+    ?person rp:reviewed ?paper .
+  }
+  
+  #Filter by paper ID
+  #FILTER (?paper = <http://www.example.edu/research-publication/paper/37d616207b242f7ab072225f1bba26b8c33c7c99>)
+}

@@ -1,31 +1,56 @@
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX rp: <http://www.example.edu/research-publication/>
+PREFIX rdfs: <http://www.rdfs.org/2000/01/rdf-schema#>
 
-SELECT DISTINCT ?person ?person_name ?role ?paper
+SELECT ?personName ?authorPapers ?correspondedPapers ?reviewedPapers ?totalInfluence
+       (GROUP_CONCAT(DISTINCT STRAFTER(STR(?keyword), "/keyword/"); separator=", ") AS ?researchAreas)
 WHERE {
-  #Find all subclasses of rp:person except event_chair and journal_editor
-  ?role rdfs:subClassOf rp:person .
-  FILTER (?role != rp:event_chair && ?role != rp:journal_editor)
-  
-  #Find persons of those roles
-  ?person a ?role .
-  OPTIONAL { ?person rp:person_name ?person_name }
-  
-  #Find persons linked to the determined paper by authoring, corresponding, or reviewing
-  ?paper a rp:paper .
-  {
-    ?person rp:wrote ?paper .
-  }
-  UNION
-  {
-    ?person rp:corresponded ?paper .
-  }
-  UNION
-  {
-    ?person rp:reviewed ?paper .
-  }
-  
-  #Filter by paper ID
-  #FILTER (?paper = <http://www.example.edu/research-publication/paper/37d616207b242f7ab072225f1bba26b8c33c7c99>)
+    # Find persons who are both authors and reviewers (multi-role academics)
+    ?person a rp:person ;
+            rp:person_name ?personName .
+    
+    # Count papers they authored (includes corresponded papers via subproperty reasoning)
+    {
+        SELECT ?person (COUNT(DISTINCT ?authoredPaper) AS ?authorPapers) WHERE {
+            ?person rp:wrote ?authoredPaper .
+        }
+        GROUP BY ?person
+    }
+    
+    # Count papers they corresponded for (demonstrates subproperty reasoning)
+    OPTIONAL {
+        SELECT ?person (COUNT(DISTINCT ?correspondedPaper) AS ?correspondedPapers) WHERE {
+            ?person rp:corresponded ?correspondedPaper .
+        }
+        GROUP BY ?person
+    }
+    
+    # Count papers they reviewed (cross-role analysis)
+    OPTIONAL {
+        SELECT ?person (COUNT(DISTINCT ?reviewedPaper) AS ?reviewedPapers) WHERE {
+            ?person rp:reviewed ?reviewedPaper .
+        }
+        GROUP BY ?person
+    }
+    
+    # Get research areas from authored papers
+    OPTIONAL {
+        ?person rp:wrote ?paper .
+        ?paper rp:has_keyword ?keywordURI .
+        # Extract keyword from URI (assumes keyword is in URI fragment)
+        BIND(REPLACE(STR(?keywordURI), ".[/#]([^/#])$", "$1") AS ?keyword)
+    }
+    
+    # Calculate total influence score
+		BIND(
+            (COALESCE(?authorPapers, 0) * 1) + 
+            (COALESCE(?correspondedPapers, 0) * 2) + 
+            (COALESCE(?reviewedPapers, 0) * 3) 
+        AS ?totalInfluence)
+    
+    # Filter for influential multi-role academics
+    FILTER(?totalInfluence > 2)
 }
+GROUP BY ?personName ?authorPapers ?correspondedPapers ?reviewedPapers ?totalInfluence
+ORDER BY DESC(?totalInfluence) ?personName
+LIMIT 10

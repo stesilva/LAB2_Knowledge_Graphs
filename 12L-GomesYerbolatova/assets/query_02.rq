@@ -1,9 +1,61 @@
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rp: <http://www.example.edu/research-publication/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT DISTINCT ?paper
+SELECT ?author_name ?citing_venue_type ?cited_venue_type 
+       (COUNT(DISTINCT ?citing_paper) AS ?papers_citing) 
+       (COUNT(DISTINCT ?cited_paper) AS ?papers_cited)
+       (COUNT(DISTINCT ?citation_link) AS ?total_citations)
 WHERE {
-  ?paper rdf:type rp:paper .
-  ?paper rp:cites ?otherPaper . #paper as domain
-  ?citingPaper rp:cites ?paper . #paper as range
+  # Find authors who wrote papers
+  ?author rp:wrote ?citing_paper .
+  ?author rp:person_name ?author_name .
+  
+  # These papers cite other papers
+  ?citing_paper rp:cites ?cited_paper .
+  BIND(CONCAT(STR(?citing_paper), "-", STR(?cited_paper)) AS ?citation_link)
+  
+  # Find venue types for citing papers (using reasoning but filtering out parent class)
+  {
+    ?pub1 rp:published ?citing_paper .
+    ?pub1 rp:published_in_edition ?edition1 .
+    ?venue1 rp:has_edition ?edition1 .
+    ?venue1 rdf:type ?venue_type1 .
+    ?venue_type1 rdfs:subClassOf* rp:event .
+    # Filter out the parent 'event' class to get only specific subtypes
+    FILTER(?venue_type1 != rp:event)
+    BIND(STRAFTER(STR(?venue_type1), STR(rp:)) AS ?citing_venue_type)
+  }
+  UNION
+  {
+    ?pub1 rp:published ?citing_paper .
+    ?pub1 rp:published_in_volume ?volume1 .
+    BIND("journal" AS ?citing_venue_type)
+  }
+  
+  # Find venue types for cited papers (using reasoning but filtering out parent class)
+  {
+    ?pub2 rp:published ?cited_paper .
+    ?pub2 rp:published_in_edition ?edition2 .
+    ?venue2 rp:has_edition ?edition2 .
+    ?venue2 rdf:type ?venue_type2 .
+    ?venue_type2 rdfs:subClassOf* rp:event .
+    # Filter out the parent 'event' class to get only specific subtypes
+    FILTER(?venue_type2 != rp:event)
+    BIND(STRAFTER(STR(?venue_type2), STR(rp:)) AS ?cited_venue_type)
+  }
+  UNION
+  {
+    ?pub2 rp:published ?cited_paper .
+    ?pub2 rp:published_in_volume ?volume2 .
+    BIND("journal" AS ?cited_venue_type)
+  }
+  
+  # Filter for cross-venue citations (different venue types)
+  FILTER(?citing_venue_type != ?cited_venue_type)
 }
+GROUP BY ?author_name ?citing_venue_type ?cited_venue_type
+HAVING (COUNT(DISTINCT ?citation_link) >= 2)
+ORDER BY DESC(?total_citations)?author_name
+
+
